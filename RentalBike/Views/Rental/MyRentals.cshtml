@@ -1,0 +1,62 @@
+﻿@model List<RentalBike.Models.Rental>
+
+@{
+    ViewData["Title"] = "Мої оренди";
+}
+
+<div class="container mt-4">
+    <h2>Мої оренди</h2>
+
+    @if (!Model.Any())
+    {
+        <div class="alert alert-info">У вас поки немає оренд.</div>
+    }
+    else
+    {
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th>Велосипед</th>
+                    <th>Годин</th>
+                    <th>Ціна</th>
+                    <th>Початок</th>
+                    <th>Кінець</th>
+                    <th>Статус</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var rental in Model)
+                {
+                    <tr>
+                        <td>@rental.Bike?.Model</td>
+                        <td>@rental.Hours</td>
+                        <td>@rental.TotalPrice грн</td>
+                        <td>@rental.StartDate.ToString("dd.MM.yyyy HH:mm")</td>
+                        <td>@rental.EndDate?.ToString("dd.MM.yyyy HH:mm")</td>
+                        <td>
+                            @if (rental.Status == "Pending")
+                            {
+                                <span class="badge bg-warning">Очікує</span>
+                            }
+                            else if (rental.Status == "Active")
+                            {
+                                <span class="badge bg-success">Активна</span>
+                            }
+                            else if (rental.Status == "Completed")
+                            {
+                                <span class="badge bg-secondary">Завершена</span>
+                            }
+                            else
+                            {
+                                <span class="badge bg-danger">Скасована</span>
+                            }
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+</div>
+<div class="text-center mt-4">
+    <a href="/" class="btn btn-secondary">Повернутися на головну</a>
+</div>

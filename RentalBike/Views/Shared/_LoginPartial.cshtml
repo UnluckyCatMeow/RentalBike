@@ -8,15 +8,15 @@
 {
     <form asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Page("/Index", new { area = "" })" method="post" id="logoutForm">
         <ul>
-            <li><a asp-area="Identity" asp-page="/Account/Manage/Index">Привет, @UserManager.GetUserName(User)!</a></li>
-            <li><button type="submit">Выйти</button></li>
+            <li><a asp-area="Identity" asp-page="/Account/Manage/Index">Привіт, @UserManager.GetUserName(User)!</a></li>
+            <li><button type="submit">Вийти</button></li>
         </ul>
     </form>
 }
 else
 {
     <ul>
-        <li><a asp-area="Identity" asp-page="/Account/Register">Регистрация</a></li>
-        <li><a asp-area="Identity" asp-page="/Account/Login">Войти</a></li>
+        <a class="btn btn-outline-primary me-2" asp-area="Identity" asp-page="/Account/Register">Реєстрація</a>
+        <a class="btn btn-primary" asp-area="Identity" asp-page="/Account/Login">Увійти</a>
     </ul>
 }

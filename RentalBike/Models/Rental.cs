@@ -17,11 +17,15 @@ namespace RentalBike.Models
         public DateTime StartDate { get; set; }
 
         public DateTime? EndDate { get; set; }
+
         [Precision(6, 2)]
         public decimal TotalPrice { get; set; }
-
-
-        public Bike Bike { get; set; }
+        public int Hours { get; set; }
+        public string FullName { get; set; } = string.Empty;
+        public string Phone { get; set; } = string.Empty;
+        public string Email { get; set; } = string.Empty;
+        public string Status { get; set; } = "Pending";
+        public Bike? Bike { get; set; }
         public ApplicationUser? User { get; set; }
     }
 }

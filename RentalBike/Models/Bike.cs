@@ -15,6 +15,7 @@ namespace RentalBike.Models
         public string Color { get; set; } = string.Empty;
         public bool IsAvailable { get; set; } = false;
         public int Quantity { get; set; } = 0;
+        public string? ImageUrl { get; set; }
 
     }
 }

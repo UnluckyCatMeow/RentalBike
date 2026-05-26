@@ -1,0 +1,28 @@
+﻿@model IEnumerable<RentalBike.Models.ApplicationUser>
+@{
+    ViewData["Title"] = "Користувачі";
+}
+
+<h2>Користувачі</h2>
+
+<table class="table table-bordered">
+    <thead>
+        <tr>
+            <th>Email</th>
+            <th>Ім'я</th>
+            <th>Прізвище</th>
+            <th>Телефон</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var user in Model)
+        {
+            <tr>
+                <td>@user.Email</td>
+                <td>@user.FirstName</td>
+                <td>@user.LastName</td>
+                <td>@user.PhoneNumber</td>
+            </tr>
+        }
+    </tbody>
+</table>

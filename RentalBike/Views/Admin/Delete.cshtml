@@ -1,0 +1,10 @@
+﻿@model RentalBike.Models.Bike
+@{
+    ViewData["Title"] = "Видалити велосипед";
+}
+
+<h3>Ви впевнені, що хочете видалити? @Model.Model?</h3>
+<form method="post">
+    <button type="submit" class="btn btn-danger">Видалити</button>
+    <a asp-action="Bikes" class="btn btn-secondary">Скасувати</a>
+</form>

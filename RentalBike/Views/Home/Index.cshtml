@@ -1,12 +1,52 @@
 ﻿@model List<RentalBike.Models.Bike>
+@using Microsoft.AspNetCore.Identity
+@inject SignInManager<ApplicationUser> SignInManager
 
 @{
     ViewData["Title"] = "Велопрокат";
 }
 
 <div class="container mt-4">
-    <h1 class="text-center mb-4">🚲 Наші велосипеди</h1>
+    <h1 class="text-center mb-4">Наші велосипеди</h1>
 
+    <!-- Фільтри -->
+    <div class="row mb-4">
+        <div class="col-md-12">
+            <form method="get" class="row g-3">
+                <div class="col-md-4">
+                    <input type="text" name="search" class="form-control" placeholder="Пошук за моделлю..." value="@ViewBag.CurrentSearch">
+                </div>
+                <div class="col-md-3">
+                    <select name="type" class="form-select">
+                        <option value="all">Всі типи</option>
+                        @foreach (var t in ViewBag.Types)
+                        {
+                            if (t == ViewBag.CurrentType)
+                            {
+                                <option value="@t" selected>@t</option>
+                            }
+                            else
+                            {
+                                <option value="@t">@t</option>
+                            }
+                        }
+                    </select>
+                </div>
+                <div class="col-md-3">
+                    <select name="sort" class="form-select">
+                        <option value="">За назвою</option>
+                        <option value="price_asc" selected="@(ViewBag.CurrentSort == "price_asc")">Ціна: низька → висока</option>
+                        <option value="price_desc" selected="@(ViewBag.CurrentSort == "price_desc")">Ціна: висока → низька</option>
+                    </select>
+                </div>
+                <div class="col-md-2">
+                    <button type="submit" class="btn btn-primary w-100">Фільтрувати</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Сітка велосипедів -->
     <div class="row">
         @foreach (var bike in Model)
         {
@@ -18,13 +58,23 @@
                         <p><strong>Колір:</strong> @bike.Color</p>
                         <p><strong>Ціна:</strong> @bike.Price грн/год</p>
                         <p><strong>В наявності:</strong> @bike.Quantity шт.</p>
+
                         @if (bike.IsAvailable && bike.Quantity > 0)
                         {
-                            <span class="badge bg-success">Доступний</span>
+                            <span class="badge bg-success mb-2 d-block">Доступний</span>
+
+                            @if (SignInManager.IsSignedIn(User))
+                            {
+                                <a href="@Url.Action("Rent", "Home", new { id = bike.Id })" class="btn btn-primary w-100">Орендувати</a>
+                            }
+                            else
+                            {
+                                <a href="/Identity/Account/Login" class="btn btn-outline-primary w-100">Увійдіть, щоб орендувати</a>
+                            }
                         }
                         else
                         {
-                            <span class="badge bg-danger">Немає в наявності</span>
+                            <span class="badge bg-danger d-block">Немає в наявності</span>
                         }
                     </div>
                 </div>

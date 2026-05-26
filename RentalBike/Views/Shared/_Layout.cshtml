@@ -1,46 +1,127 @@
 ﻿<!DOCTYPE html>
-<html lang="en">
+@using Microsoft.AspNetCore.Identity
+@inject SignInManager<ApplicationUser> SignInManager
+@inject UserManager<ApplicationUser> UserManager
+<html lang="uk">
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - RentalBike</title>
+    <title>@ViewData["Title"] - Велопрокат</title>
+
+    <style>
+        html, body {
+            background-color: #f5f5f5;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            visibility: hidden;
+            opacity: 0;
+            transition: visibility 0s linear 0.2s, opacity 0.2s ease;
+        }
+
+            body.loaded {
+                visibility: visible;
+                opacity: 1;
+                transition: opacity 0.2s ease;
+            }
+    </style>
+
+    <script>
+        (function() {
+            window.addEventListener('load', function() {
+                document.body.classList.add('loaded');
+            });
+            if (document.readyState === 'complete') {
+                document.body.classList.add('loaded');
+            }
+        })();
+    </script>
+
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/RentalBike.styles.css" asp-append-version="true" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 </head>
 <body>
     <header>
         <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
             <div class="container-fluid">
-                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">RentalBike</a>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
-                        aria-expanded="false" aria-label="Toggle navigation">
+                <a class="navbar-brand" asp-controller="Bike" asp-action="Index">Велопрокат</a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse">
                     <span class="navbar-toggler-icon"></span>
                 </button>
                 <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
                     <ul class="navbar-nav flex-grow-1">
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
+                            <a class="nav-link text-dark" asp-controller="Bike" asp-action="Index">Головна</a>
                         </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
-                        </li>
+                        @if (SignInManager.IsSignedIn(User) && User.IsInRole("Admin"))
+                        {
+                            <li class="nav-item dropdown">
+                                <a class="nav-link dropdown-toggle text-dark" href="#" id="adminDropdown" role="button" data-bs-toggle="dropdown">Адмін панель</a>
+                                <ul class="dropdown-menu">
+                                    <li><a class="dropdown-item" asp-controller="Admin" asp-action="Bikes">Велосипеди</a></li>
+                                    <li><a class="dropdown-item" asp-controller="Admin" asp-action="Users">Користувачі</a></li>
+                                    <li><a class="dropdown-item" asp-controller="Admin" asp-action="Rentals">Всі оренди</a></li>
+                                </ul>
+                            </li>
+                        }
+                    </ul>
+                    <ul class="navbar-nav ms-auto">
+                        @if (SignInManager.IsSignedIn(User))
+                        {
+                            var user = await UserManager.GetUserAsync(User);
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-controller="Profile" asp-action="Index">@user?.FirstName @user?.LastName</a>
+                            </li>
+                            <li class="nav-item">
+                                <form asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="/" method="post" class="form-inline">
+                                    <button type="submit" class="nav-link btn btn-link text-dark">Вийти</button>
+                                </form>
+                            </li>
+                        }
+                        else
+                        {
+                            <a class="btn btn-outline-primary me-2" asp-area="Identity" asp-page="/Account/Register">Реєстрація</a>
+                            <a class="btn btn-primary" asp-area="Identity" asp-page="/Account/Login">Увійти</a>
+                        }
                     </ul>
                 </div>
             </div>
         </nav>
     </header>
-    <div class="container">
-        <main role="main" class="pb-3">
-            @RenderBody()
-        </main>
-    </div>
-
-    <footer class="border-top footer text-muted">
+    <main role="main" class="pb-3">
         <div class="container">
-            &copy; 2026 - RentalBike - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+            @RenderBody()
+        </div>
+    </main>
+
+    <footer class="footer bg-dark text-white mt-3 pt-2 pb-2">
+        <div class="container">
+            <div class="row">
+                <div class="col-12 col-sm-4 mb-2 text-center text-sm-start">
+                    <img src="/images/logo.png" alt="Logo" style="max-width: 120px; height: auto; opacity: 0.7;">
+                    <p class="small mt-2 mb-0">© 2026 Велопрокат</p>
+                </div>
+                <div class="col-12 col-sm-4 mb-2">
+                    <h5>Контакти</h5>
+                    <p class="mb-0 small"><i class="fas fa-phone"></i> +380 93 953 2000</p>
+                    <p class="mb-0 small"><i class="fas fa-phone"></i> +380 96 953 2000</p>
+                    <p class="mb-0 small"><i class="fas fa-phone"></i> +380 66 953 2000</p>
+                    <p class="mb-0 small"><i class="fas fa-envelope"></i> info@veloprok.com</p>
+                    <p class="mb-0 small"><i class="fas fa-map-marker-alt"></i> м. Київ, вул. Солом'янська, 7</p>
+                </div>
+                <div class="col-12 col-sm-4 mb-2">
+                    <h5>Розташування</h5>
+                    <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d20319.32763572823!2d30.465345!3d50.428231!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x40d4c8a9c8c8c8c9%3A0x0!2zNTDCsDI1JzQxLjYiTiAzMMKwMjgnMTUuNiJF!5e0!3m2!1suk!2sua!4v1612345678901!5m2!1suk!2sua"
+                            style="border:0; width:100%; height:100px;" allowfullscreen="" loading="lazy"></iframe>
+                </div>
+            </div>
         </div>
     </footer>
+
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>

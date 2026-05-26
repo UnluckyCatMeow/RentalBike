@@ -1,0 +1,34 @@
+﻿@model List<RentalBike.Models.Rental>
+@{
+    ViewData["Title"] = "Всі оренди";
+}
+
+<h2>Всі оренди</h2>
+<table class="table table-bordered">
+    <thead>
+        <tr><th>Велосипед</th><th>Користувач</th><th>Годин</th><th>Ціна</th><th>Початок</th><th>Кінець</th><th>Статус</th><th></th></tr>
+    </thead>
+    <tbody>
+        @foreach (var rental in Model)
+        {
+            <tr>
+                <td>@rental.Bike?.Model</td>
+                <td>@rental.User?.Email</td>
+                <td>@rental.Hours</td>
+                <td>@rental.TotalPrice</td>
+                <td>@rental.StartDate.ToString("g")</td>
+                <td>@(rental.EndDate?.ToString("g") ?? "-")</td>
+                <td>@rental.Status</td>
+                <td>
+                    @if (rental.Status != "Completed")
+                    {
+                        <form asp-action="CompleteRental" method="post">
+                            <input type="hidden" name="id" value="@rental.Id" />
+                            <button type="submit" class="btn btn-sm btn-success">Завершити</button>
+                        </form>
+                    }
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

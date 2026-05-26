@@ -14,10 +14,29 @@ namespace RentalBike.Controllers
             _context = context;
         }
 
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(string search, string type, string sort)
         {
-            var bikes = await _context.Bikes.ToListAsync();
-            return View(bikes);
+            var bikes = _context.Bikes.AsQueryable();
+
+            if (!string.IsNullOrEmpty(search))
+                bikes = bikes.Where(b => b.Model.Contains(search));
+
+            if (!string.IsNullOrEmpty(type) && type != "all")
+                bikes = bikes.Where(b => b.Type == type);
+
+            switch (sort)
+            {
+                case "price_asc": bikes = bikes.OrderBy(b => b.Price); break;
+                case "price_desc": bikes = bikes.OrderByDescending(b => b.Price); break;
+                default: bikes = bikes.OrderBy(b => b.Model); break;
+            }
+
+            ViewBag.Types = await _context.Bikes.Select(b => b.Type).Distinct().ToListAsync();
+            ViewBag.CurrentType = type;
+            ViewBag.CurrentSearch = search;
+            ViewBag.CurrentSort = sort;
+
+            return View(await bikes.ToListAsync());
         }
     }
 }

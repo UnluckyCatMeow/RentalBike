@@ -1,0 +1,78 @@
+﻿@using RentalBike.Models
+@{
+    var bike = ViewBag.Bike as Bike;
+    ViewData["Title"] = "Оренда велосипеда";
+}
+<div class="container mt-4">
+    <h2>Оренда велосипеда @bike?.Model</h2>
+
+    <div class="row">
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-body">
+                    <h5>@bike?.Model</h5>
+                    <p>Тип: @bike?.Type</p>
+                    <p>Колір: @bike?.Color</p>
+                    <p>Ціна за годину: <span id="price">@bike?.Price</span> грн</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6">
+            <form method="post" id="rentForm">
+                <div class="mb-3">
+                    <label class="form-label">ПІБ</label>
+                    <input type="text" name="fullName" class="form-control" required>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Номер телефону</label>
+                    <input type="tel" name="phone" class="form-control" required>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Email</label>
+                    <input type="email" name="email" class="form-control" required>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">Дата та час початку</label>
+                    <input type="datetime-local" name="startDate" id="startDate" class="form-control" required>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">Кількість годин (1-24)</label>
+                    <input type="number" name="hours" id="hours" min="1" max="24" class="form-control" value="1" required>
+                </div>
+
+                <input type="hidden" name="totalPrice" id="totalPriceHidden" value="@bike?.Price">
+
+                <div class="alert alert-success text-center">
+                    <strong>До сплати: <span id="totalPrice">@bike?.Price</span> грн</strong>
+                </div>
+
+                <button type="submit" class="btn btn-success">Підтвердити оренду</button>
+                <a href="@Url.Action("Index", "Bike")" class="btn btn-secondary">Назад</a>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+    (function() {
+        const price = parseFloat('@bike?.Price');
+        const hoursInput = document.getElementById('hours');
+        const totalSpan = document.getElementById('totalPrice');
+        const totalHidden = document.getElementById('totalPriceHidden');
+
+        function updateTotal() {
+            let hours = parseInt(hoursInput.value) || 0;
+            let total = hours * price;
+            totalSpan.innerText = total.toFixed(2);
+            totalHidden.value = total;
+        }
+
+        if (hoursInput) {
+            hoursInput.addEventListener('input', updateTotal);
+            updateTotal();
+        }
+    })();
+</script>
