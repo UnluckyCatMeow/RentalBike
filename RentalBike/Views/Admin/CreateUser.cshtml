@@ -1,0 +1,26 @@
+﻿@{
+    ViewData["Title"] = "Додати користувача";
+}
+
+<h2>Додати користувача</h2>
+
+<form method="post">
+    <div class="mb-3">
+        <label>Email</label>
+        <input type="email" name="email" class="form-control" required />
+    </div>
+    <div class="mb-3">
+        <label>Пароль</label>
+        <input type="password" name="password" class="form-control" required />
+    </div>
+    <div class="mb-3">
+        <label>Ім'я</label>
+        <input type="text" name="firstName" class="form-control" required />
+    </div>
+    <div class="mb-3">
+        <label>Прізвище</label>
+        <input type="text" name="lastName" class="form-control" required />
+    </div>
+    <button type="submit" class="btn btn-success">Додати</button>
+    <a asp-action="Users" class="btn btn-secondary">Назад</a>
+</form>

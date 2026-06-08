@@ -16,7 +16,6 @@ namespace RentalBike.Controllers
             _context = context;
         }
 
-        // GET: Форма оренди
         [Authorize]
         public async Task<IActionResult> Rent(int id)
         {
@@ -26,7 +25,6 @@ namespace RentalBike.Controllers
             return View();
         }
 
-        // POST: Створення оренди
         [Authorize]
         [HttpPost]
         public async Task<IActionResult> Rent(int id, int hours, string fullName, string phone, string email)
@@ -64,7 +62,6 @@ namespace RentalBike.Controllers
             return RedirectToAction("MyRentals");
         }
 
-        // Мої оренди
         [Authorize]
         public async Task<IActionResult> MyRentals()
         {

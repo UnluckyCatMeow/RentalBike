@@ -110,5 +110,43 @@ namespace RentalBike.Controllers
             var users = await _userManager.Users.ToListAsync();
             return View(users);
         }
+        // GET: форма додавання користувача
+        public IActionResult CreateUser()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> CreateUser(string email, string password, string firstName, string lastName)
+        {
+            if (await _userManager.FindByEmailAsync(email) != null)
+            {
+                ModelState.AddModelError("", "Email вже існує");
+                return View();
+            }
+
+            var user = new ApplicationUser
+            {
+                UserName = email,
+                Email = email,
+                FirstName = firstName,
+                LastName = lastName,
+                EmailConfirmed = true,
+                IsBlocked = false
+            };
+
+            var result = await _userManager.CreateAsync(user, password);
+            if (result.Succeeded)
+            {
+                await _userManager.AddToRoleAsync(user, "User");
+                TempData["Message"] = "Користувача додано";
+                return RedirectToAction(nameof(Users));
+            }
+
+            foreach (var error in result.Errors)
+                ModelState.AddModelError("", error.Description);
+
+            return View();
+        }
     }
 }
